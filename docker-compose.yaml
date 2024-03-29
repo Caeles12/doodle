@@ -1,0 +1,51 @@
+version: "3.8"
+services:
+  db:
+    image: mysql
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_DATABASE=tlc
+      - MYSQL_USER=tlc
+      - MYSQL_PASSWORD=tlc
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost', '-u', 'root', '-p$$MYSQL_ROOT_PASSWORD' ]
+      timeout: 20s
+      retries: 10
+
+  etherpad:
+    image: etherpad/etherpad:latest
+    ports:
+      - 9001:9001
+    volumes:
+      - ./api/APIKEY.txt:/opt/etherpad-lite/APIKEY.txt
+  
+  mail:
+    image: bytemark/smtp
+    restart: always
+    ports:
+      - 2525:25
+      
+  api:
+    image: doodle/api
+    build: api
+    environment:
+      HOSTNAME_PAD: etherpad
+      PORT_PAD: 9001
+      HOSTNAME_DB: db
+      PORT_DB: 3306
+      HOSTNAME_MAIL: mail
+      PORT_MAIL: 2525
+    depends_on:
+      db:
+        condition: service_healthy
+  
+  front:
+    image: doodle/front
+    build: front
+    ports:
+      - 4000:80
+    depends_on:
+      - api
+
