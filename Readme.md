@@ -1,31 +1,47 @@
-# Remote meetings planning
+# Tutoriel
 
-This project is used in a course on the *ops* part at the [University of Rennes](https://www.univ-rennes1.fr/), France. It is a kind of doodle clone developed in so-called "cloud-native" technologies in order to allow students to work on a continuous deployment chain in a containerized environment. Among the feature, the application automatically initializes a pad for the meeting and a chat room for the meeting participants.
+# Introduction
 
-- The [back](https://github.com/barais/doodlestudent/tree/main/api) is developed using the [quarkus.io](https://quarkus.io/) framework. 
-- The [front](https://github.com/barais/doodlestudent/tree/main/front) is developed in [angular](https://angular.io/) using the [primeng](https://www.primefaces.org/primeng/)  angular UI component library and the [fullcalendar](https://fullcalendar.io/) graphical component.
+Dans le cadre de la sécurité dans un cycle de DevOps, on souhaite proposer des améliorations de la sécurité du projet Doodle.
 
-A demo of the application is available [here](https://doodle.diverse-team.fr/).
+## Prérequis
 
-Three videos (in french) are available. They present:
-- the [main application feature](https://drive.google.com/file/d/1GQbdgq2CHcddTlcoHqM5Zc8Dw5o_eeLg/preview), 
-- its [architecture](https://drive.google.com/file/d/1l5UAsU5_q-oshwEW6edZ4UvQjN3-tzwi/preview) 
-- and a [short code review](https://drive.google.com/file/d/1jxYNfJdtd4r_pDbOthra360ei8Z17tX_/preview) .
+- Java 11
+- Maven
+- Docker
+- Docker Compose
 
-For french native speaker that wants to follow the course. The course web page is available [here](https://hackmd.diverse-team.fr/s/SJqu5DjSD).
+## Démarrage du docker
 
-## Requirments
+On doit tout d'abord compiler le projet Quarkus. Pour cela on doit utiliser la version 11 de Java en modifiant le `JAVA_HOME` par exemple. On lance la compilation via Maven du projet avec la commande suivante :
 
-Verify that these are installed on your computer :
+```sh
+./mvnz packge -Dmaven.test.skip=true
+```
+On ignore les tests lors de la compilation, il faut lancer les dépendances via le docker compose de l'api. Un fichier `tlcdemoApp-1.0.0-SNAPSHOT-runner.jar` doit alors se situer dans le dossier `api/target`.
 
-- Java (JDK) 11, e.g. [Oracle JSE](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html) (with the JAVA_HOME environment variable correctly set)
-- [Maven](http://maven.apache.org/install.html)
-- [Git](https://git-scm.com/download/)
-- [Docker](https://docs.docker.com/engine/install/) (at least version 19.03.0, 20.10 preferred)
-- Docker compose ([Compose V2](https://docs.docker.com/compose/cli-command/#installing-compose-v2) preferred, should be able to run 3.8 compose files)
-- [Node](https://nodejs.org/en/) at least version 16
-- npm at least version 8 (installed with Node)
-- A Java IDE (Eclipse, IntelliJ IDEA, NetBeans, VS Code, Xcode, etc.)
+On se place ensuite à la racine du projet pour lancer les conteneurs.
+```sh
+docker compose -f docker-compose.yaml up
+```
 
-If you are on Windows, Docker can not mount files outside your user folder (Unless an absolute path is provided).
-Please, clone the doodle in the user folder or change the compose file to correctly mount the etherpad APIKEY.txt
+Docker va ensuite automatiquement construire les différents conteneurs nécessaires au projet puis les lancer.
+
+## Amélioration de la sécurité
+
+### Utilisation de NGINX
+
+NGINX est un serveur web largement utilisé. Il possède un nombre important de fonctionnalité permettant d'améliorer la sécurité.
+
+On peut notamment citer le reverse proxy permettant de limiter le nombre de ports ouvert des conteneurs en se limitant au port 80 (pour la connexion HTTP). 
+
+# Conclusion
+
+C'était super.
+
+# Auteurs
+
+- Noam GEFFROY
+- Pol JAOUEN
+- Stevan METAYER
+- Fanny SHEHABI
