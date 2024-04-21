@@ -24,7 +24,7 @@ RUN npm run build --prod --baseHref=/front/
 ###################
 # PRODUCTION MODE #
 ###################
-FROM nginx:1.25.3-alpine
+FROM nginx:1.25.4-alpine
 
 # Dependencies
 # RUN apk update && apk add nginx
